@@ -108,8 +108,8 @@ void FortuneThread::http_announce(QByteArray in)
     bool stopped = false;
     bool seeding = false;
 
-    qlonglong up;
-    qlonglong down;
+    qlonglong up   = 0;
+    qlonglong down = 0;
 
     foreach (QByteArray st, in.split('&'))
         if(!st.isEmpty())
