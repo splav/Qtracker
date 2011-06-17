@@ -30,7 +30,7 @@ DBUnsorted::DBUnsorted(struct SharedData *shared, QObject *parent)
 
                 qget_torrent_data = new QSqlQuery(db);
                 qget_torrent_data->setForwardOnly(true);
-                << qget_torrent_data->prepare("SELECT t.torrent_id, t.topic_id, t.bt_gold, t.size FROM phpbb_bt_torrents t, phpbb_topics tp WHERE tp.topic_id = t.topic_id AND t.info_hash = unhex( :hash ) LIMIT 1");
+                qget_torrent_data->prepare("SELECT t.torrent_id, t.topic_id, t.bt_gold, t.size FROM phpbb_bt_torrents t, phpbb_topics tp WHERE tp.topic_id = t.topic_id AND t.info_hash = unhex( :hash ) LIMIT 1");
 
                 qget_user_data = new QSqlQuery(db);
                 qget_user_data->setForwardOnly(true);
