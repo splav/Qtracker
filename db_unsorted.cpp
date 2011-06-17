@@ -22,35 +22,35 @@ DBUnsorted::DBUnsorted(struct SharedData *shared, QObject *parent)
 
         qup_seeder_last_seen = new QSqlQuery(db);
         qup_seeder_last_seen->setForwardOnly(true);
-        qDebug() << qup_seeder_last_seen->prepare("UPDATE phpbb_bt_torrents SET complete_count = :compl, seeder_last_seen = :seeder_ls, last_seeder_uid = :user_id WHERE torrent_id = :torrent_id");
+        qup_seeder_last_seen->prepare("UPDATE phpbb_bt_torrents SET complete_count = :compl, seeder_last_seen = :seeder_ls, last_seeder_uid = :user_id WHERE torrent_id = :torrent_id");
 
         qget_stat = new QSqlQuery(db);
         qget_stat->setForwardOnly(true);
-        qDebug() << qget_stat->prepare("SELECT main_ip, expire_time, t_up_total, t_down_total FROM phpbb_bt_stat WHERE torrent_id = :t_id AND user_id = :u_id LIMIT 1");
+        qget_stat->prepare("SELECT main_ip, expire_time, t_up_total, t_down_total FROM phpbb_bt_stat WHERE torrent_id = :t_id AND user_id = :u_id LIMIT 1");
 
                 qget_torrent_data = new QSqlQuery(db);
                 qget_torrent_data->setForwardOnly(true);
-                qDebug() << qget_torrent_data->prepare("SELECT t.torrent_id, t.topic_id, t.bt_gold, t.size FROM phpbb_bt_torrents t, phpbb_topics tp WHERE tp.topic_id = t.topic_id AND t.info_hash = unhex( :hash ) LIMIT 1");
+                << qget_torrent_data->prepare("SELECT t.torrent_id, t.topic_id, t.bt_gold, t.size FROM phpbb_bt_torrents t, phpbb_topics tp WHERE tp.topic_id = t.topic_id AND t.info_hash = unhex( :hash ) LIMIT 1");
 
                 qget_user_data = new QSqlQuery(db);
                 qget_user_data->setForwardOnly(true);
-                qDebug() << qget_user_data->prepare("SELECT user_id FROM phpbb_bt_users WHERE auth_key = :pk  LIMIT 1");
+                qget_user_data->prepare("SELECT user_id FROM phpbb_bt_users WHERE auth_key = :pk  LIMIT 1");
 
                 qget_user_stat_data = new QSqlQuery(db);
                 qget_user_stat_data->setForwardOnly(true);
-                qDebug() << qget_user_stat_data->prepare("SELECT u_up_total, u_down_total, u_bonus_total FROM phpbb_bt_users_stat WHERE user_id = :user_id  LIMIT 1");
+                qget_user_stat_data->prepare("SELECT u_up_total, u_down_total, u_bonus_total FROM phpbb_bt_users_stat WHERE user_id = :user_id  LIMIT 1");
 
                 qrepl_stat = new QSqlQuery(db);
                 qrepl_stat->setForwardOnly(true);
-                qDebug() << qrepl_stat->prepare("REPLACE INTO phpbb_bt_stat (topic_id, torrent_id, user_id, user_status, compl_count, t_up_total, t_down_total, expire_time, main_ip) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                qrepl_stat->prepare("REPLACE INTO phpbb_bt_stat (topic_id, torrent_id, user_id, user_status, compl_count, t_up_total, t_down_total, expire_time, main_ip) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         qrepl_user_stat = new QSqlQuery(db);
         qrepl_user_stat->setForwardOnly(true);
-        qDebug() << qrepl_user_stat->prepare("REPLACE INTO phpbb_bt_users_stat (user_id, u_up_total, u_down_total, u_bonus_total) VALUES (?, ?, ?, ?)");
+        qrepl_user_stat->prepare("REPLACE INTO phpbb_bt_users_stat (user_id, u_up_total, u_down_total, u_bonus_total) VALUES (?, ?, ?, ?)");
 
         qrepl_tracker = new QSqlQuery(db);
         qrepl_tracker->setForwardOnly(true);
-        qDebug() << qrepl_tracker->prepare("REPLACE INTO phpbb_bt_tracker (torrent_id, user_id, seeder, expire_time, ip ,port) VALUES (:tr_id, :u_id, :seeder, :exp_time, :ip, :port)");
+        qrepl_tracker->prepare("REPLACE INTO phpbb_bt_tracker (torrent_id, user_id, seeder, expire_time, ip ,port) VALUES (:tr_id, :u_id, :seeder, :exp_time, :ip, :port)");
 }
 
 bool DBUnsorted::getUserData(User &u, QByteArray pk)
@@ -177,7 +177,6 @@ QMutexLocker locker(&dblock);
 qDebug() << qrepl_stat->lastError().text();
                     return false;
             }
-qDebug() << qrepl_stat->executedQuery();
 
             temp.topic_id.clear();
             temp.torrent_id.clear();
@@ -225,7 +224,6 @@ QMutexLocker locker(&dblock);
 qDebug() << qrepl_user_stat->lastError().text();
             return false;
         }
-qDebug() << qrepl_user_stat->executedQuery();
 
         temp.user_id.clear();
         temp.up.clear();
@@ -278,7 +276,6 @@ QMutexLocker locker(&dblock);
             qDebug() << qrepl_tracker->lastError().text();
             return false;
         }
-qDebug() << qrepl_tracker->executedQuery();
 
         temp.torrent_id.clear();
         temp.user_id.clear();
