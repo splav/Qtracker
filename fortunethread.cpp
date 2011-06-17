@@ -116,12 +116,12 @@ void FortuneThread::http_announce(QByteArray in)
         {
             QList<QByteArray> tmp = st.split('=');
             if (tmp.size() != 2)
-                break;
+                continue;
 
             if (tmp[0].startsWith("left")) { //left match
                 if (!tmp[1].toLongLong())
                     seeding = true;
-                break;
+                continue;
             }
 
             if (tmp[0].startsWith("event")) { //event match
@@ -131,53 +131,53 @@ void FortuneThread::http_announce(QByteArray in)
                     started = true;
                 else if ( !tmp[1].startsWith("compl") )
                     return http_error("Invalid event");
-                break;
+                continue;
             }
 
             if (tmp[0].startsWith("num")) { //numwant match
                 int tn = tmp[1].toInt();
                 if (tn < numwant)
                     numwant = tn;
-                break;
+                continue;
             }
 
             if (tmp[0].startsWith("compact")) { //compact match
                 if ( !tmp[1].toInt())
                     return http_error("Please enable COMPACT MODE in your client");
-                break;
+                continue;
             }
 
             if (tmp[0].startsWith("download")) { //download match
                 down = tmp[1].toLongLong();
                 if (down < 0)
                     return http_error("Invalid downloaded");
-                break;
+                continue;
             }
 
             if (tmp[0].startsWith("upload")) { //upload match
                 up = tmp[1].toLongLong();
                 if (up < 0)
                     return http_error("Invalid uploaded");
-                break;
+                continue;
             }
 
             if (tmp[0].startsWith("info_hash")) { //info_hash match
                 hash = decode(tmp[1]);
                 if (hash.size() != 20)
                     return http_error("Invalid hash");
-                break;
+                continue;
             }
 
             if (tmp[0].startsWith("port")) { //port match
                 host.port = htons(tmp[1].toInt());
-                break;
+                continue;
             }
 
             if (tmp[0].startsWith("uk")) { //uk match
                 pk = tmp[1];
                 if (pk.size() != 10)
                     return http_error("Please LOG IN and REDOWNLOAD this torrent (passkey not found)");
-                break;
+                continue;
             }
 	}
 
