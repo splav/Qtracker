@@ -4,7 +4,7 @@
 const char * cdb_server   = "unsorted.ru";
 const char * cdb_database = "unsorted";
 const char * cdb_user     = "bt";
-const char * cdb_password = "unsbt";
+const char * cdb_password = "btpass";
 
 DBUnsorted::DBUnsorted(struct SharedData *shared, QObject *parent)
     : QObject(parent)
@@ -77,7 +77,7 @@ bool DBUnsorted::getUserData(User &u, QByteArray pk)
     } else {
         u.up	= 0;
         u.down	= 0;
-        u.bonus	= 5368709120;
+        u.bonus	= 5368709120LL;
     }
 
     return true;
