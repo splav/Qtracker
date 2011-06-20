@@ -87,7 +87,7 @@ void QTRWorkerThread::http_error(const char *error)
 
 void QTRWorkerThread::http_status()
 {
-    reply = QString("Version: 2.4.1; total torrents: %1; total users: %2;").arg(data->tr.size()).arg(data->u.size()).toAscii();
+    reply = QString("Version: 2.5.0; total torrents: %1; total users: %2;").arg(data->tr.size()).arg(data->u.size()).toAscii();
 }
 
 void QTRWorkerThread::http_announce(QByteArray in)
