@@ -98,6 +98,7 @@ QtrackerServer::QtrackerServer(QObject *parent)
     //write basic configuration
     data.settings->setValue("global/port",               defaultPort     );
     data.settings->setValue("global/max_worker_threads", maxWorkerThreads);
+    data->settings->sync();
 
     data.db_gate = new DBUnsorted(&data, this);
 

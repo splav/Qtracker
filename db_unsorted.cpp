@@ -16,6 +16,7 @@ data->settingsLock.lockForWrite();
         data->settings->setValue("unsorted/dbdatabase", dbdatabase);
         data->settings->setValue("unsorted/dbuser",     dbuser    );
         data->settings->setValue("unsorted/dbpassword", dbpassword);
+        data->settings->sync();
 data->settingsLock.unlock();
 
         db = QSqlDatabase::addDatabase("QMYSQL","dbthread");
