@@ -22,6 +22,7 @@
 #include <QSemaphore>
 #include <QReadWriteLock>
 #include <QTcpSocket>
+#include <QSettings>
 
 class FortuneThread;
 class DBUnsorted;
@@ -79,8 +80,9 @@ struct SharedData {
     UserList    u;
     ConfigList  cfg;
 
-    QReadWriteLock trLock;
-    QReadWriteLock cfLock;
+    QReadWriteLock trackerLock;
+    QReadWriteLock configLock;
+    QReadWriteLock settingsLock;
 
     bool free;
     int  expire_delta;
@@ -88,6 +90,7 @@ struct SharedData {
     int  autoclean_interval;
 
     DBUnsorted *db_gate;
+    QSettings * settings;
 };
 
 #endif /* STRUCT_H_ */

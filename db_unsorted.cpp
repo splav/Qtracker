@@ -8,15 +8,26 @@ const char * cdb_password = "btpass";
 
 DBUnsorted::DBUnsorted(struct SharedData *shared, QObject *parent)
     : QObject(parent)
-{
-
+{  
         data = shared;
 
+data->settingsLock.lockForWrite();
+        dbserver   = data->settings->value("unsorted/dbserver",   "unsorted.me").toString();
+        dbdatabase = data->settings->value("unsorted/dbdatabase", "unsorted"   ).toString();
+        dbuser     = data->settings->value("unsorted/dbuser",     "bt"         ).toString();
+        dbpassword = data->settings->value("unsorted/dbpassword", "btpass"     ).toString();
+
+        data->settings->setValue("unsorted/dbserver",   dbserver  );
+        data->settings->setValue("unsorted/dbdatabase", dbdatabase);
+        data->settings->setValue("unsorted/dbuser",     dbuser    );
+        data->settings->setValue("unsorted/dbpassword", dbpassword);
+data->settingsLock.unlock();
+
         db = QSqlDatabase::addDatabase("QMYSQL","dbthread");
-        db.setHostName(cdb_server);
-        db.setDatabaseName(cdb_database);
-        db.setUserName(cdb_user);
-        db.setPassword(cdb_password);
+        db.setHostName(dbserver);
+        db.setDatabaseName(dbdatabase);
+        db.setUserName(dbuser);
+        db.setPassword(dbpassword);
         if (!db.open())
                 qFatal("db connection error");
 
@@ -293,16 +304,16 @@ bool DBUnsorted::getConfig()
 {
 QMutexLocker locker(&dblock);
 
-    data->cfLock.lockForWrite();
+    data->configLock.lockForWrite();
 
     qDebug() << "db rescan:" << QDateTime::currentDateTime();
     //get config and ban data from db
     {
         QSqlDatabase db = QSqlDatabase::addDatabase("QMYSQL","main_thread");
-        db.setHostName(cdb_server);
-        db.setDatabaseName(cdb_database);
-        db.setUserName(cdb_user);
-        db.setPassword(cdb_password);
+        db.setHostName(dbserver);
+        db.setDatabaseName(dbdatabase);
+        db.setUserName(dbuser);
+        db.setPassword(dbpassword);
         if (!db.open()){
             qDebug("db connection error !!!!!!!");
             return false;
@@ -329,7 +340,7 @@ QMutexLocker locker(&dblock);
     QSqlDatabase::removeDatabase("main_thread");
 
     data->autoclean_interval = data->cfg["uqt_trcleanup_cfgupdate_interval"].toInt();
-    data->cfLock.unlock();
+    data->configLock.unlock();
 
     return true;
 }

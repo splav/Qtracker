@@ -53,7 +53,8 @@ class FortuneServer : public QTcpServer
     Q_OBJECT
 
 public:
-    FortuneServer(int th_n, QObject *parent = 0);
+    int defaultPort;
+    FortuneServer(QObject *parent = 0);
 
 private slots:
     void reloadAndClean();
@@ -65,9 +66,13 @@ protected:
     void incomingConnection(int socketDescriptor);
 
 private:
+    QSettings * settings;
+
     QTimer cfgTimer;
     SharedData data;
-    int connections;
+    int workerThreads;
+    int maxPendingConnections;
+    int maxWorkerThreads;
 
     void http_error(QTcpSocket * socket, int code);
     void http_request(QTcpSocket * socket, QString * data, size_t length);

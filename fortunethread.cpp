@@ -184,7 +184,7 @@ void FortuneThread::http_announce(QByteArray in)
     QByteArray pid = QByteArray((char*)&address,4).append(QByteArray((char*)&(host.port),2));
 
 //now we have all data we needed
-data->trLock.lockForWrite();
+data->trackerLock.lockForWrite();
 
     bool peer_exist = data->tr[hash].peers.contains(pid);
     Peer opd = data->tr[hash].peers[pid];
@@ -200,7 +200,7 @@ data->trLock.lockForWrite();
     user = data->u[pk];
     if(!user.user_id && !db_gate->getUserData(user, pk)){
         data->u.remove(pk);
-data->trLock.unlock();
+data->trackerLock.unlock();
         return http_error("User not registered");
     }
 
@@ -208,11 +208,11 @@ data->trLock.unlock();
 
     if (!peer_exist && !db_gate->getTorrentData(pd, hash, sip)){
         data->tr.remove(hash);
-data->trLock.unlock();
+data->trackerLock.unlock();
         return http_error("Torrent not registered");
     }
 
-data->trLock.unlock();
+data->trackerLock.unlock();
     if (pd.seeding){
         if (!db_gate->setSeederLastSeen(pd))
             return http_error("internal db error: setSeederLastSeen");
@@ -250,13 +250,13 @@ data->trLock.unlock();
     // standart reply
     reply = QString("d8:completei0e10:incompletei0e8:intervali%1e5:peers0:e").arg(data->announce_interval).toAscii();
 
-data->trLock.lockForWrite();
+data->trackerLock.lockForWrite();
     data->u[pk] = user;
 
     if (stopped && peer_exist){
         data->tr[hash].seedc -= opd.seeding;
         data->tr[hash].peers.remove(pd.peer_id);
-data->trLock.unlock();
+data->trackerLock.unlock();
         return;
     }
 
@@ -264,7 +264,7 @@ data->trLock.unlock();
     pd.expire = expire;
 
     data->tr[hash].peers[pd.peer_id] = pd;
-data->trLock.unlock();
+data->trackerLock.unlock();
 
     if (!db_gate->setTracker(pd, host, expire))
         return http_error("internal db error: upTracker");
@@ -274,7 +274,7 @@ data->trLock.unlock();
 
         if (numwant > 0){
 
-data->trLock.lockForRead();
+data->trackerLock.lockForRead();
             Torrent tr = data->tr[hash];
 
             if (numwant > tr.peers.size())
@@ -290,7 +290,7 @@ data->trLock.lockForRead();
                 for(int i = 0; i < numwant; ++i)
                     reply.append(tr.peers.keys()[qrand() % tr.peers.size()]);
 
-data->trLock.unlock();
+data->trackerLock.unlock();
 
             reply.append('e');
         }
@@ -336,15 +336,15 @@ void FortuneThread::run()
     if(!sock.waitForReadyRead(3000))
         goto fin;
 
-data->cfLock.lockForRead();
+data->configLock.lockForRead();
     if (data->bans.contains(sock.peerAddress().toString())){
         http_error("You are banned, see http://unsorted.ru/viewtopic.php?t=2867");
-data->cfLock.unlock();
+data->configLock.unlock();
         goto send;
     }
 
     numwant = data->cfg["numwant"].toInt();
-data->cfLock.unlock();
+data->configLock.unlock();
 
     now = QDateTime::currentDateTime().toTime_t();
     req = sock.readLine();

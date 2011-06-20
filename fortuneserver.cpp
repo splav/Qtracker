@@ -53,7 +53,7 @@ void FortuneServer::reloadAndClean()
     data.db_gate->getConfig();
 
     uint current = QDateTime::currentDateTime().toTime_t();
-data.trLock.lockForWrite();
+data.trackerLock.lockForWrite();
 
     //remove expired tracker records
     QHash < QByteArray, Torrent >::iterator i = data.tr.begin();
@@ -81,27 +81,37 @@ data.trLock.lockForWrite();
             j = data.u.erase(j);
         else ++j;
 
-data.trLock.unlock();
+data.trackerLock.unlock();
 
     cfgTimer.start(data.autoclean_interval * 1000);
 }
 
-FortuneServer::FortuneServer(int th_n, QObject *parent)
+FortuneServer::FortuneServer(QObject *parent)
     : QTcpServer(parent)
 {
+    data.settings = new QSettings("/etc/qtracker.conf", QSettings::IniFormat, this);
+
+    //read global configuration
+    defaultPort      = data.settings->value("global/port",               80).toInt();
+    maxWorkerThreads = data.settings->value("global/max_worker_threads", 25).toInt();
+
+    //write basic configuration
+    data.settings->setValue("global/port",               defaultPort     );
+    data.settings->setValue("global/max_worker_threads", maxWorkerThreads);
+
     data.db_gate = new DBUnsorted(&data, this);
 
     reloadAndClean();
     connect(&cfgTimer, SIGNAL(timeout()), this, SLOT(reloadAndClean()));
 
-    setMaxPendingConnections(th_n);
-    connections = 0;
+    setMaxPendingConnections(maxWorkerThreads);
+    workerThreads = 0;
 }
 
 void FortuneServer::incomingConnection(int socketDescriptor)
 {
-    if(connections < 25){ // FIXME: magick numbers
-        ++connections;
+    if(workerThreads < maxWorkerThreads){
+        ++workerThreads;
         FortuneThread *thread = new FortuneThread(&data, this, socketDescriptor);
         connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
         connect(thread, SIGNAL(finished()), this, SLOT(finished()));
@@ -118,6 +128,6 @@ void FortuneServer::incomingConnection(int socketDescriptor)
 
 void FortuneServer::finished()
 {
-    --connections;
+    --workerThreads;
 }
 

@@ -52,8 +52,8 @@ int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-    FortuneServer server(QString(argv[2]).toInt());
-    if (!server.listen(QHostAddress::Any,QString(argv[1]).toInt()))
+    FortuneServer server(&app);
+    if (!server.listen(QHostAddress::Any, server.defaultPort))
         qFatal("Unable to start the server: %s", server.errorString().toAscii().data());
 
     qDebug() << "server is running on port" << server.serverPort();

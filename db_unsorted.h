@@ -41,7 +41,6 @@ class DBUnsorted : public QObject
     Q_OBJECT
 
 public:
-
     DBUnsorted(struct SharedData *shared, QObject *parent);
 
     bool getUserData(User &u, QByteArray pk);
@@ -75,6 +74,11 @@ private:
     SetStatusData  setStatusData;
     SetTrackerData setTrackerData;
     SetUserData    setUserData;
+
+    QString dbserver;
+    QString dbdatabase;
+    QString dbuser;
+    QString dbpassword;
 };
 
 #endif // DB_UNSORTED_H
