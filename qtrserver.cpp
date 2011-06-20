@@ -41,14 +41,14 @@
 **
 ****************************************************************************/
 
-#include "fortuneserver.h"
+#include "qtrserver.h"
 
 #include <QDebug>
 
 #include <stdlib.h>
 #include "config.h"
 
-void FortuneServer::reloadAndClean()
+void QtrackerServer::reloadAndClean()
 {
     data.db_gate->getConfig();
 
@@ -86,7 +86,7 @@ data.trackerLock.unlock();
     cfgTimer.start(data.autoclean_interval * 1000);
 }
 
-FortuneServer::FortuneServer(QObject *parent)
+QtrackerServer::QtrackerServer(QObject *parent)
     : QTcpServer(parent)
 {
     data.settings = new QSettings("/etc/qtracker.conf", QSettings::IniFormat, this);
@@ -108,11 +108,11 @@ FortuneServer::FortuneServer(QObject *parent)
     workerThreads = 0;
 }
 
-void FortuneServer::incomingConnection(int socketDescriptor)
+void QtrackerServer::incomingConnection(int socketDescriptor)
 {
     if(workerThreads < maxWorkerThreads){
         ++workerThreads;
-        FortuneThread *thread = new FortuneThread(&data, this, socketDescriptor);
+        QTRWorkerThread *thread = new QTRWorkerThread(&data, this, socketDescriptor);
         connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
         connect(thread, SIGNAL(finished()), this, SLOT(finished()));
         thread->start();
@@ -126,7 +126,7 @@ void FortuneServer::incomingConnection(int socketDescriptor)
 }
 
 
-void FortuneServer::finished()
+void QtrackerServer::finished()
 {
     --workerThreads;
 }

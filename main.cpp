@@ -44,7 +44,7 @@
 #include <QCoreApplication>
 #include <QtCore>
 
-#include "fortuneserver.h"
+#include "qtrserver.h"
 
 #include <stdlib.h>
 
@@ -52,7 +52,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-    FortuneServer server(&app);
+    QtrackerServer server(&app);
     if (!server.listen(QHostAddress::Any, server.defaultPort))
         qFatal("Unable to start the server: %s", server.errorString().toAscii().data());
 

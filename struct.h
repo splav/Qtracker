@@ -24,7 +24,7 @@
 #include <QTcpSocket>
 #include <QSettings>
 
-class FortuneThread;
+class QTRWorkerThread;
 class DBUnsorted;
 
 struct User {

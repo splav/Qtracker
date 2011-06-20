@@ -41,41 +41,45 @@
 **
 ****************************************************************************/
 
-#ifndef FORTUNESERVER_H
-#define FORTUNESERVER_H
+#ifndef FORTUNETHREAD_H
+#define FORTUNETHREAD_H
 
-#include <QTcpServer>
+#include "struct.h"
+#include "db_unsorted.h"
 
-#include "fortunethread.h"
+#include <QThread>
 
-class FortuneServer : public QTcpServer
+class QTRWorkerThread : public QThread
 {
     Q_OBJECT
 
 public:
-    int defaultPort;
-    FortuneServer(QObject *parent = 0);
+    QTRWorkerThread(struct SharedData *shared, QObject *parent, int socketDescriptor);
 
-private slots:
-    void reloadAndClean();
+    void run();
 
-public slots:
-    void finished();
-
-protected:
-    void incomingConnection(int socketDescriptor);
+signals:
+    void error(QTcpSocket::SocketError socketError);
 
 private:
-    QSettings * settings;
+    DBUnsorted *db_gate;
 
-    QTimer cfgTimer;
-    SharedData data;
-    int workerThreads;
-    int maxPendingConnections;
-    int maxWorkerThreads;
+    //int n;
 
-    void http_error(QTcpSocket * socket, int code);
-    void http_request(QTcpSocket * socket, QString * data, size_t length);
+    int sock_id;
+    int numwant;
+    quint32 address;
+    quint32 serv;
+    uint now;
+
+    QByteArray reply;
+
+    struct SharedData *data;
+
+    void http_error(const char *error);
+    void http_status();
+    void http_request(QByteArray data);
+    void http_announce(QByteArray data);
 };
 
 #endif

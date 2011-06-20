@@ -41,7 +41,7 @@
 **
 ****************************************************************************/
 
-#include "fortunethread.h"
+#include "qtrworkerthread.h"
 
 #include <QtNetwork>
 #include <arpa/inet.h>
@@ -73,24 +73,24 @@ QByteArray decode(QByteArray in)
     return d;
 }
 
-FortuneThread::FortuneThread(struct SharedData *shared, QObject *parent, int socketDescriptor)
+QTRWorkerThread::QTRWorkerThread(struct SharedData *shared, QObject *parent, int socketDescriptor)
     : QThread(parent),sock_id(socketDescriptor),data(shared)
 {
     db_gate = data->db_gate;
 }
 
-void FortuneThread::http_error(const char *error)
+void QTRWorkerThread::http_error(const char *error)
 {
     QString err = QString(error);
     reply = QString("d14:failure reason%1:").arg(err.size()).append(err).append("e").toAscii();
 }
 
-void FortuneThread::http_status()
+void QTRWorkerThread::http_status()
 {
     reply = QString("Version: 2.4.1; total torrents: %1; total users: %2;").arg(data->tr.size()).arg(data->u.size()).toAscii();
 }
 
-void FortuneThread::http_announce(QByteArray in)
+void QTRWorkerThread::http_announce(QByteArray in)
 {
     QByteArray hash;
     QByteArray pk;
@@ -298,7 +298,7 @@ data->trackerLock.unlock();
 }
 
 
-void FortuneThread::http_request(QByteArray in)
+void QTRWorkerThread::http_request(QByteArray in)
 {
     if (!in.startsWith("GET /") ) return http_error("HTTP 400");
 
@@ -320,7 +320,7 @@ void FortuneThread::http_request(QByteArray in)
 
 }
 
-void FortuneThread::run()
+void QTRWorkerThread::run()
 {
     QTcpSocket sock;
     QByteArray req, header;

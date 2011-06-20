@@ -1,12 +1,13 @@
 HEADERS = \
-    fortuneserver.h \
-    fortunethread.h \
     db_unsorted.h \
-    struct.h
-SOURCES = fortuneserver.cpp \
-    fortunethread.cpp \
+    struct.h \
+    qtrserver.h \
+    qtrworkerthread.h
+SOURCES = \
     main.cpp \
-    db_unsorted.cpp
+    db_unsorted.cpp \
+    qtrserver.cpp \
+    qtrworkerthread.cpp
 QT = network \
     sql \
     core
