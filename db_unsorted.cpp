@@ -1,11 +1,6 @@
 #include "db_unsorted.h"
 #include "arpa/inet.h"
 
-const char * cdb_server   = "unsorted.ru";
-const char * cdb_database = "unsorted";
-const char * cdb_user     = "bt";
-const char * cdb_password = "btpass";
-
 DBUnsorted::DBUnsorted(struct SharedData *shared, QObject *parent)
     : QObject(parent)
 {  
@@ -15,7 +10,7 @@ data->settingsLock.lockForWrite();
         dbserver   = data->settings->value("unsorted/dbserver",   "unsorted.me").toString();
         dbdatabase = data->settings->value("unsorted/dbdatabase", "unsorted"   ).toString();
         dbuser     = data->settings->value("unsorted/dbuser",     "bt"         ).toString();
-        dbpassword = data->settings->value("unsorted/dbpassword", "btpass"     ).toString();
+        dbpassword = data->settings->value("unsorted/dbpassword", "password"   ).toString();
 
         data->settings->setValue("unsorted/dbserver",   dbserver  );
         data->settings->setValue("unsorted/dbdatabase", dbdatabase);
