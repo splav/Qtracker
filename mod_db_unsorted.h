@@ -4,7 +4,7 @@
 #include <QtSql>
 #include <QCache>
 #include <QVariantList>
-#include "struct.h"
+#include "qtrstruct.h"
 
 
 struct SetStatusData {

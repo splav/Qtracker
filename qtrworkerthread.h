@@ -1,8 +1,8 @@
 #ifndef FORTUNETHREAD_H
 #define FORTUNETHREAD_H
 
-#include "struct.h"
-#include "db_unsorted.h"
+#include "qtrstruct.h"
+#include "mod_db_unsorted.h"
 
 #include <QThread>
 

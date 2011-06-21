@@ -1,13 +1,13 @@
 HEADERS = \
-    db_unsorted.h \
-    struct.h \
     qtrserver.h \
-    qtrworkerthread.h
+    qtrworkerthread.h \
+    qtrstruct.h \
+    mod_db_unsorted.h
 SOURCES = \
-    main.cpp \
-    db_unsorted.cpp \
     qtrserver.cpp \
-    qtrworkerthread.cpp
+    qtrworkerthread.cpp \
+    qtrmain.cpp \
+    mod_db_unsorted.cpp
 QT = network \
     sql \
     core
