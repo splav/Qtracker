@@ -5,13 +5,13 @@
 
 #include "qtrworkerthread.h"
 
-class QtrackerServer : public QTcpServer
+class QTRServer : public QTcpServer
 {
     Q_OBJECT
 
 public:
     int defaultPort;
-    QtrackerServer(QObject *parent = 0);
+    QTRServer(QObject *parent = 0);
 
 private slots:
     void reloadAndClean();

@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include "config.h"
 
-void QtrackerServer::reloadAndClean()
+void QTRServer::reloadAndClean()
 {
     data.db_gate->getConfig();
 
@@ -43,7 +43,7 @@ data.trackerLock.unlock();
     cfgTimer.start(data.autoclean_interval * 1000);
 }
 
-QtrackerServer::QtrackerServer(QObject *parent)
+QTRServer::QTRServer(QObject *parent)
     : QTcpServer(parent)
 {
     data.settings = new QSettings("/etc/qtracker.conf", QSettings::IniFormat, this);
@@ -66,7 +66,7 @@ QtrackerServer::QtrackerServer(QObject *parent)
     workerThreads = 0;
 }
 
-void QtrackerServer::incomingConnection(int socketDescriptor)
+void QTRServer::incomingConnection(int socketDescriptor)
 {
     if(workerThreads < maxWorkerThreads){
         ++workerThreads;
@@ -84,7 +84,7 @@ void QtrackerServer::incomingConnection(int socketDescriptor)
 }
 
 
-void QtrackerServer::finished()
+void QTRServer::finished()
 {
     --workerThreads;
 }

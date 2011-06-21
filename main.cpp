@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     QCoreApplication app(argc, argv);
     qsrand(QTime(0,0,0).secsTo(QTime::currentTime()));
-    QtrackerServer server(&app);
+    QTRServer server(&app);
     if (!server.listen(QHostAddress::Any, server.defaultPort))
         qFatal("Unable to start the server: %s", server.errorString().toAscii().data());
 
