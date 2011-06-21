@@ -3,7 +3,6 @@
 #include <QDebug>
 
 #include <stdlib.h>
-#include "config.h"
 
 void QTRServer::reloadAndClean()
 {
