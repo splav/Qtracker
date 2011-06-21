@@ -6,7 +6,6 @@
 #include <QVariantList>
 #include "qtrstruct.h"
 
-
 struct SetStatusData {
     QVariantList topic_id;
     QVariantList torrent_id;
@@ -17,6 +16,9 @@ struct SetStatusData {
     QVariantList s_down;
     QVariantList expire;
     QVariantList main_ip;
+    QVariantList ip;
+    QVariantList port;
+    QVariantList seeding;
 };
 
 struct SetTrackerData {
@@ -46,7 +48,7 @@ public:
     bool getUserData(User &u, QByteArray pk);
     bool getTorrentData(Peer &pd, QByteArray hash, QString sip);
     bool setSeederLastSeen(Peer &pd);
-    bool setStatus(Peer &pd, QString sip, uint now);
+    bool setStatus(Peer &pd, QString sip, uint now, Host &host);
     bool setTracker(Peer &pd, Host &host, uint exp_time);
     bool setUserStat(User &u);
     bool getConfig();

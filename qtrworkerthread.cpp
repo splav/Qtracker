@@ -197,7 +197,7 @@ data->trackerLock.unlock();
     user.expire = expire;
 
     //torrent
-    if (!db_gate->setStatus(pd, sip, now))
+    if (!db_gate->setStatus(pd, sip, now, host))
         return http_error("internal db error: setStatus");
 
     //user

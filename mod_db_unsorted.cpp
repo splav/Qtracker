@@ -37,7 +37,7 @@ data->settingsLock.unlock();
 
                 qget_torrent_data = new QSqlQuery(db);
                 qget_torrent_data->setForwardOnly(true);
-                qget_torrent_data->prepare("SELECT t.torrent_id, t.topic_id, t.bt_gold, t.size FROM phpbb_bt_torrents t, phpbb_topics tp WHERE tp.topic_id = t.topic_id AND t.info_hash = unhex( :hash ) LIMIT 1");
+                qget_torrent_data->prepare("SELECT torrent_id, topic_id, bt_gold, size FROM phpbb_bt_torrents WHERE info_hash = unhex( :hash ) LIMIT 1");
 
                 qget_user_data = new QSqlQuery(db);
                 qget_user_data->setForwardOnly(true);
@@ -49,7 +49,7 @@ data->settingsLock.unlock();
 
                 qrepl_stat = new QSqlQuery(db);
                 qrepl_stat->setForwardOnly(true);
-                qrepl_stat->prepare("REPLACE INTO phpbb_bt_stat (topic_id, torrent_id, user_id, user_status, compl_count, t_up_total, t_down_total, expire_time, main_ip) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                qrepl_stat->prepare("REPLACE INTO phpbb_bt_stat (topic_id, torrent_id, user_id, user_status, compl_count, t_up_total, t_down_total, expire_time, main_ip, ip, port, seeder) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         qrepl_user_stat = new QSqlQuery(db);
         qrepl_user_stat->setForwardOnly(true);
@@ -134,7 +134,7 @@ QMutexLocker locker(&dblock);
     return qup_seeder_last_seen->exec();
 }
 
-bool DBUnsorted::setStatus(Peer &pd, QString sip, uint now)
+bool DBUnsorted::setStatus(Peer &pd, QString sip, uint now, Host &host)
 {
 QMutexLocker llocker(&slock);
 
@@ -147,9 +147,11 @@ QMutexLocker llocker(&slock);
     setStatusData.s_down.append(pd.s_down);
     setStatusData.expire.append(now+300);
     setStatusData.main_ip.append(sip);
+    setStatusData.ip.append(host.ip);
+    setStatusData.port.append(htons(host.port));
+    setStatusData.seeding.append(pd.seeding);
 
-
-    if(setStatusData.topic_id.size()>50)
+    if(setStatusData.topic_id.size()>50) //FIXME
     {
         SetStatusData temp = setStatusData;
 
@@ -162,6 +164,9 @@ QMutexLocker llocker(&slock);
         setStatusData.s_down.clear();
         setStatusData.expire.clear();
         setStatusData.main_ip.clear();
+        setStatusData.ip.clear();
+        setStatusData.port.clear();
+        setStatusData.seeding.clear();
 
 llocker.unlock();
 QMutexLocker locker(&dblock);
@@ -178,6 +183,10 @@ QMutexLocker locker(&dblock);
             qrepl_stat->bindValue(6,temp.s_down);
             qrepl_stat->bindValue(7,temp.expire);
             qrepl_stat->bindValue(8,temp.main_ip);
+            qrepl_stat->bindValue(8,temp.ip);
+            qrepl_stat->bindValue(8,temp.port);
+            qrepl_stat->bindValue(8,temp.seeding);
+            //
 
             if (!qrepl_stat->execBatch())
             {
@@ -194,6 +203,9 @@ qDebug() << qrepl_stat->lastError().text();
             temp.s_down.clear();
             temp.expire.clear();
             temp.main_ip.clear();
+            temp.ip.clear();
+            temp.port.clear();
+            temp.seeding.clear();
         }
     }
     return true;
@@ -208,7 +220,7 @@ QMutexLocker llocker(&ulock);
     setUserData.down.append(u.down);
     setUserData.bonus.append(u.bonus);
 
-    if(setUserData.user_id.size()>50)
+    if(setUserData.user_id.size()>50) //FIXME
     {
 
         SetUserData temp = setUserData;
