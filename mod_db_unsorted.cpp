@@ -171,7 +171,7 @@ QMutexLocker llocker(&slock);
 llocker.unlock();
 QMutexLocker locker(&dblock);
 
-        //topic_id, torrent_id, user_id, user_status, compl_count, t_up_total, t_down_total, expire_time, main_ip
+        //topic_id, torrent_id, user_id, user_status, compl_count, t_up_total, t_down_total, expire_time, main_ip, ip, port, seeding
         if (pd.primary)
         {
             qrepl_stat->bindValue(0,temp.topic_id);
