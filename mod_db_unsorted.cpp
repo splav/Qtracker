@@ -183,9 +183,9 @@ QMutexLocker locker(&dblock);
             qrepl_stat->bindValue(6,temp.s_down);
             qrepl_stat->bindValue(7,temp.expire);
             qrepl_stat->bindValue(8,temp.main_ip);
-            qrepl_stat->bindValue(8,temp.ip);
-            qrepl_stat->bindValue(8,temp.port);
-            qrepl_stat->bindValue(8,temp.seeding);
+            qrepl_stat->bindValue(9,temp.ip);
+            qrepl_stat->bindValue(10,temp.port);
+            qrepl_stat->bindValue(11,temp.seeding);
             //
 
             if (!qrepl_stat->execBatch())
