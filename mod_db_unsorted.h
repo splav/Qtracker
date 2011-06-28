@@ -11,7 +11,6 @@ struct SetStatusData {
     QVariantList torrent_id;
     QVariantList user_id;
     QVariantList user_status;
-    QVariantList compl_count;
     QVariantList s_up;
     QVariantList s_down;
     QVariantList expire;

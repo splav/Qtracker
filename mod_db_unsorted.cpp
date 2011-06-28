@@ -49,7 +49,7 @@ data->settingsLock.unlock();
 
                 qrepl_stat = new QSqlQuery(db);
                 qrepl_stat->setForwardOnly(true);
-                qrepl_stat->prepare("REPLACE INTO phpbb_bt_stat (topic_id, torrent_id, user_id, user_status, compl_count, t_up_total, t_down_total, expire_time, main_ip, ip, port, seeder) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                qrepl_stat->prepare("REPLACE INTO phpbb_bt_stat (topic_id, torrent_id, user_id, user_status, t_up_total, t_down_total, expire_time, main_ip, ip, port, seeder) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
         qrepl_user_stat = new QSqlQuery(db);
         qrepl_user_stat->setForwardOnly(true);
@@ -138,7 +138,6 @@ QMutexLocker llocker(&slock);
     setStatusData.torrent_id.append(pd.torrent_id);
     setStatusData.user_id.append(pd.user_id);
     setStatusData.user_status.append(pd.seeding+1);
-    setStatusData.compl_count.append(pd.seeding);
     setStatusData.s_up.append(pd.s_up);
     setStatusData.s_down.append(pd.s_down);
     setStatusData.expire.append(now+300);
@@ -155,7 +154,6 @@ QMutexLocker llocker(&slock);
         setStatusData.torrent_id.clear();
         setStatusData.user_id.clear();
         setStatusData.user_status.clear();
-        setStatusData.compl_count.clear();
         setStatusData.s_up.clear();
         setStatusData.s_down.clear();
         setStatusData.expire.clear();
@@ -174,14 +172,13 @@ QMutexLocker locker(&dblock);
             qrepl_stat->bindValue(1,temp.torrent_id);
             qrepl_stat->bindValue(2,temp.user_id);
             qrepl_stat->bindValue(3,temp.user_status);
-            qrepl_stat->bindValue(4,temp.compl_count);
-            qrepl_stat->bindValue(5,temp.s_up);
-            qrepl_stat->bindValue(6,temp.s_down);
-            qrepl_stat->bindValue(7,temp.expire);
-            qrepl_stat->bindValue(8,temp.main_ip);
-            qrepl_stat->bindValue(9,temp.ip);
-            qrepl_stat->bindValue(10,temp.port);
-            qrepl_stat->bindValue(11,temp.seeding);
+            qrepl_stat->bindValue(4,temp.s_up);
+            qrepl_stat->bindValue(5,temp.s_down);
+            qrepl_stat->bindValue(6,temp.expire);
+            qrepl_stat->bindValue(7,temp.main_ip);
+            qrepl_stat->bindValue(8,temp.ip);
+            qrepl_stat->bindValue(9,temp.port);
+            qrepl_stat->bindValue(10,temp.seeding);
             //
 
             if (!qrepl_stat->execBatch())
@@ -194,7 +191,6 @@ qDebug() << qrepl_stat->lastError().text();
             temp.torrent_id.clear();
             temp.user_id.clear();
             temp.user_status.clear();
-            temp.compl_count.clear();
             temp.s_up.clear();
             temp.s_down.clear();
             temp.expire.clear();
