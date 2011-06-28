@@ -54,10 +54,6 @@ data->settingsLock.unlock();
         qrepl_user_stat = new QSqlQuery(db);
         qrepl_user_stat->setForwardOnly(true);
         qrepl_user_stat->prepare("REPLACE INTO phpbb_bt_users_stat (user_id, u_up_total, u_down_total, u_bonus_total) VALUES (?, ?, ?, ?)");
-
-        qrepl_tracker = new QSqlQuery(db);
-        qrepl_tracker->setForwardOnly(true);
-        qrepl_tracker->prepare("REPLACE INTO phpbb_bt_tracker (torrent_id, user_id, seeder, expire_time, ip ,port) VALUES (:tr_id, :u_id, :seeder, :exp_time, :ip, :port)");
 }
 
 bool DBUnsorted::getUserData(User &u, QByteArray pk)
@@ -254,60 +250,6 @@ qDebug() << qrepl_user_stat->lastError().text();
     return true;
 }
 
-
-bool DBUnsorted::setTracker(Peer &pd, Host &host, uint exp_time)
-{
-
-QMutexLocker llocker(&tlock);
-    //:tr_id, :u_id, :seeder, :exp_time, :ip, :port
-
-    setTrackerData.torrent_id.append(pd.torrent_id);
-    setTrackerData.user_id.append(pd.user_id);
-    setTrackerData.seeding.append(pd.seeding);
-    setTrackerData.expire.append(exp_time);
-    setTrackerData.ip.append(host.ip);
-    setTrackerData.port.append(htons(host.port));
-
-
-    if(setTrackerData.torrent_id.size()>50)
-    {
-        SetTrackerData temp = setTrackerData;
-
-        setTrackerData.torrent_id.clear();
-        setTrackerData.user_id.clear();
-        setTrackerData.seeding.clear();
-        setTrackerData.expire.clear();
-        setTrackerData.ip.clear();
-        setTrackerData.port.clear();
-
-llocker.unlock();
-QMutexLocker locker(&dblock);
-
-        qrepl_tracker->bindValue(0,temp.torrent_id);
-        qrepl_tracker->bindValue(1,temp.user_id);
-        qrepl_tracker->bindValue(2,temp.seeding);
-        qrepl_tracker->bindValue(3,temp.expire);
-        qrepl_tracker->bindValue(4,temp.ip);
-        qrepl_tracker->bindValue(5,temp.port);
-
-        if (!qrepl_tracker->execBatch())
-        {
-            qDebug() << qrepl_tracker->lastError().text();
-            return false;
-        }
-
-        temp.torrent_id.clear();
-        temp.user_id.clear();
-        temp.seeding.clear();
-        temp.expire.clear();
-        temp.ip.clear();
-        temp.port.clear();
-
-    }
-    return true;
-}
-
-
 bool DBUnsorted::getConfig()
 {
 QMutexLocker locker(&dblock);
@@ -341,7 +283,6 @@ QMutexLocker locker(&dblock);
         while (query.next())
             data->bans[query.value(0).toString()] = query.value(1).toInt();
 
-        query.exec(QString("DELETE FROM phpbb_bt_tracker WHERE expire_time < UNIX_TIMESTAMP()"));
         db.close();
     }
 

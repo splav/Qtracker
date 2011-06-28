@@ -21,15 +21,6 @@ struct SetStatusData {
     QVariantList seeding;
 };
 
-struct SetTrackerData {
-    QVariantList torrent_id;
-    QVariantList user_id;
-    QVariantList seeding;
-    QVariantList expire;
-    QVariantList ip;
-    QVariantList port;
-};
-
 struct SetUserData {
     QVariantList user_id;
     QVariantList up;
@@ -49,7 +40,6 @@ public:
     bool getTorrentData(Peer &pd, QByteArray hash, QString sip);
     bool setSeederLastSeen(Peer &pd);
     bool setStatus(Peer &pd, QString sip, uint now, Host &host);
-    bool setTracker(Peer &pd, Host &host, uint exp_time);
     bool setUserStat(User &u);
     bool getConfig();
 
@@ -59,7 +49,6 @@ private:
 
     QMutex dblock;
     QMutex ulock;
-    QMutex tlock;
     QMutex slock;
 
     QSqlDatabase db;
@@ -74,7 +63,6 @@ private:
     QSqlQuery *qrepl_tracker;
 
     SetStatusData  setStatusData;
-    SetTrackerData setTrackerData;
     SetUserData    setUserData;
 
     QString dbserver;

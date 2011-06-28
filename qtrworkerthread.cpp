@@ -223,9 +223,6 @@ data->trackerLock.unlock();
     data->tr[hash].peers[pd.peer_id] = pd;
 data->trackerLock.unlock();
 
-    if (!db_gate->setTracker(pd, host, expire))
-        return http_error("internal db error: upTracker");
-
 //return peers
 //====================================================================================
 
