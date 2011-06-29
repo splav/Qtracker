@@ -140,7 +140,7 @@ QMutexLocker llocker(&slock);
     setStatusData.user_status.append(pd.seeding+1);
     setStatusData.s_up.append(pd.s_up);
     setStatusData.s_down.append(pd.s_down);
-    setStatusData.expire.append(now+300);
+    setStatusData.expire.append(pd.expire);
     setStatusData.main_ip.append(sip);
     setStatusData.ip.append(host.ip);
     setStatusData.port.append(htons(host.port));
