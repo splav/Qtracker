@@ -38,7 +38,7 @@ public:
     bool getUserData(User &u, QByteArray pk);
     bool getTorrentData(Peer &pd, QByteArray hash, QString sip);
     bool setSeederLastSeen(Peer &pd);
-    bool setStatus(Peer &pd, QString sip, uint now, Host &host);
+    bool setStatus(Peer &pd, QString sip, Host &host);
     bool setUserStat(User &u);
     bool getConfig();
 

@@ -130,7 +130,7 @@ QMutexLocker locker(&dblock);
     return qup_seeder_last_seen->exec();
 }
 
-bool DBUnsorted::setStatus(Peer &pd, QString sip, uint now, Host &host)
+bool DBUnsorted::setStatus(Peer &pd, QString sip, Host &host)
 {
 QMutexLocker llocker(&slock);
 
