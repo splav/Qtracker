@@ -61,12 +61,15 @@ QTRServer::QTRServer(QObject *parent)
     reloadAndClean();
     connect(&cfgTimer, SIGNAL(timeout()), this, SLOT(reloadAndClean()));
 
-    setMaxPendingConnections(maxWorkerThreads);
-    workerThreads = 0;
+    //setMaxPendingConnections(maxWorkerThreads);
+    //workerThreads = 0;
+    threadPool = new QThreadPool(this);
+    threadPool->setMaxThreadCount(maxWorkerThreads);
 }
 
 void QTRServer::incomingConnection(int socketDescriptor)
 {
+/*
     if(workerThreads < maxWorkerThreads){
         ++workerThreads;
         QTRWorkerThread *thread = new QTRWorkerThread(&data, this, socketDescriptor);
@@ -80,11 +83,16 @@ void QTRServer::incomingConnection(int socketDescriptor)
         sock.setSocketDescriptor(socketDescriptor);
         sock.close();
     }
+*/
+    QTRWorkerThread *thread = new QTRWorkerThread(&data, socketDescriptor);
+    thread->setAutoDelete(true);
+
+    threadPool->start(thread);
 }
 
-
+/*
 void QTRServer::finished()
 {
     --workerThreads;
 }
-
+*/

@@ -30,8 +30,8 @@ QByteArray decode(QByteArray in)
     return d;
 }
 
-QTRWorkerThread::QTRWorkerThread(struct SharedData *shared, QObject *parent, int socketDescriptor)
-    : QThread(parent),sock_id(socketDescriptor),data(shared)
+QTRWorkerThread::QTRWorkerThread(struct SharedData *shared, int socketDescriptor)
+    :sock_id(socketDescriptor),data(shared)
 {
     db_gate = data->db_gate;
 }
@@ -280,7 +280,6 @@ void QTRWorkerThread::run()
     QByteArray req, header;
 
     if (!sock.setSocketDescriptor(sock_id)) {
-        emit error(sock.error());
         return;
     }
 

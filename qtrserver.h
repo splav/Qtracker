@@ -2,6 +2,7 @@
 #define FORTUNESERVER_H
 
 #include <QTcpServer>
+#include <QThreadPool>
 
 #include "qtrworkerthread.h"
 
@@ -17,22 +18,23 @@ private slots:
     void reloadAndClean();
 
 public slots:
-    void finished();
+//    void finished();
 
 protected:
     void incomingConnection(int socketDescriptor);
 
 private:
-    QSettings * settings;
+    QSettings *settings;
+    QThreadPool *threadPool;
 
     QTimer cfgTimer;
     SharedData data;
-    int workerThreads;
-    int maxPendingConnections;
+//    int workerThreads;
+//    int maxPendingConnections;
     int maxWorkerThreads;
 
-    void http_error(QTcpSocket * socket, int code);
-    void http_request(QTcpSocket * socket, QString * data, size_t length);
+    void http_error(QTcpSocket *socket, int code);
+    void http_request(QTcpSocket *socket, QString *data, size_t length);
 };
 
 #endif

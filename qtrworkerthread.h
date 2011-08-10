@@ -4,19 +4,16 @@
 #include "qtrstruct.h"
 #include "mod_db_unsorted.h"
 
-#include <QThread>
+//#include <QThread>
+#include <QRunnable>
 
-class QTRWorkerThread : public QThread
+class QTRWorkerThread : public QRunnable
 {
-    Q_OBJECT
 
 public:
-    QTRWorkerThread(struct SharedData *shared, QObject *parent, int socketDescriptor);
+    QTRWorkerThread(struct SharedData *shared, int socketDescriptor);
 
     void run();
-
-signals:
-    void error(QTcpSocket::SocketError socketError);
 
 private:
     DBUnsorted *db_gate;
