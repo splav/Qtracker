@@ -61,7 +61,7 @@ QTRServer::QTRServer(QObject *parent)
     reloadAndClean();
     connect(&cfgTimer, SIGNAL(timeout()), this, SLOT(reloadAndClean()));
 
-    //setMaxPendingConnections(maxWorkerThreads);
+    setMaxPendingConnections(maxWorkerThreads);
     //workerThreads = 0;
     threadPool = new QThreadPool(this);
     threadPool->setMaxThreadCount(maxWorkerThreads);
