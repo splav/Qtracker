@@ -44,7 +44,7 @@ void QTRWorkerThread::http_error(const char *error)
 
 void QTRWorkerThread::http_status()
 {
-    reply = QString("Version: 2.7.0; total torrents: %1; total users: %2;\r\n\r\n").arg(data->tr.size()).arg(data->u.size()).toAscii();
+    reply = QString("Version: 2.7.0; total torrents: %1; total users: %2;").arg(data->tr.size()).arg(data->u.size()).toAscii();
 }
 
 void QTRWorkerThread::http_announce(QByteArray in)
@@ -312,7 +312,7 @@ data->configLock.unlock();
     http_request(req);
 
 send:
-    reply = QByteArray("HTTP/1.0 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ").append(QByteArray::number(reply.size())).append("\r\n\r\n").append(reply);
+    reply = QByteArray("HTTP/1.0 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ").append(QByteArray::number(reply.size())).append("\r\n").append("\r\n\r\n").append(reply);
     sock.write(reply);
     sock.flush();
 fin:
