@@ -57,6 +57,7 @@ QTRServer::QTRServer(QObject *parent)
     data.settings->sync();
 
     data.db_gate = new DBUnsorted(&data, this);
+    data.sockets = new QSemaphore(800);
 
     reloadAndClean();
     connect(&cfgTimer, SIGNAL(timeout()), this, SLOT(reloadAndClean()));
@@ -84,10 +85,17 @@ void QTRServer::incomingConnection(int socketDescriptor)
         sock.close();
     }
 */
-    QTRWorkerThread *thread = new QTRWorkerThread(&data, socketDescriptor);
-    thread->setAutoDelete(true);
 
-    threadPool->start(thread);
+    if(data.sockets->tryAcquire()){
+    QTRWorkerThread *thread = new QTRWorkerThread(&data, socketDescriptor);
+        thread->setAutoDelete(true);
+
+        threadPool->start(thread);
+    } else {
+        QTcpSocket sock;
+        sock.setSocketDescriptor(socketDescriptor);
+        sock.close();
+    }
 }
 
 /*

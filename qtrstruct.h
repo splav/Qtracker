@@ -80,6 +80,8 @@ struct SharedData {
     UserList    u;
     ConfigList  cfg;
 
+    QSemaphore  *sockets;
+
     QReadWriteLock trackerLock;
     QReadWriteLock configLock;
     QReadWriteLock settingsLock;

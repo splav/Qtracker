@@ -318,4 +318,5 @@ send:
 fin:
     sock.disconnectFromHost();
     sock.close();
+    data->sockets->release();
 }
