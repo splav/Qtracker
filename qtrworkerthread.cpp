@@ -312,7 +312,7 @@ data->configLock.unlock();
     http_request(req);
 
 send:
-    reply = QByteArray("HTTP/1.0 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ").append(QByteArray::number(reply.size())).append("\r\n").append("\r\n\r\n").append(reply);
+    reply = QByteArray("HTTP/1.0 200 OK\r\nContent-Type: text/plain\r\nContent-Length: ").append(QByteArray::number(reply.size())).append("\r\n\r\n").append(reply);
     sock.write(reply);
     sock.flush();
 fin:
