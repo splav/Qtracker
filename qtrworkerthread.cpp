@@ -44,15 +44,14 @@ void QTRWorkerThread::http_error(const char *error)
 
 void QTRWorkerThread::http_status()
 {
-    reply = QString("Version: 2.7.1; total torrents: %1; total users: %2;").arg(data->tr.size()).arg(data->u.size()).toAscii();
+    reply = QString("Version: 2.8.0; total torrents: %1; total users: %2;").arg(data->tr.size()).arg(data->u.size()).toAscii();
 }
 
 void QTRWorkerThread::http_scrape(QByteArray in)
 {
     QByteArray hash;
+    reply = QByteArray();
 
-
-    reply = QByteArray("d5:filesd");
     foreach (QByteArray st, in.split('&'))
         if (!st.isEmpty()) {
             QList<QByteArray> tmp = st.split('=');
@@ -72,8 +71,12 @@ data->trackerLock.lockForRead();
                                  QString(hash)).arg(data->tr[hash].seedc).arg(data->tr[hash].seedc).arg(data->tr[hash].peerc - data->tr[hash].seedc).toAscii());
             }
 data->trackerLock.unlock();
-            reply.append("ee");
         }
+
+    if (reply.length()){
+        reply.prepend("d5:filesd");
+        reply.append("ee");
+    }
 }
 
 void QTRWorkerThread::http_announce(QByteArray in)
