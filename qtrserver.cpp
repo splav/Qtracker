@@ -65,28 +65,13 @@ QTRServer::QTRServer(QObject *parent)
     connect(&cfgTimer, SIGNAL(timeout()), this, SLOT(reloadAndClean()));
 
     setMaxPendingConnections(maxWorkerThreads);
-    //workerThreads = 0;
+
     threadPool = new QThreadPool(this);
     threadPool->setMaxThreadCount(maxWorkerThreads);
 }
 
 void QTRServer::incomingConnection(int socketDescriptor)
 {
-/*
-    if(workerThreads < maxWorkerThreads){
-        ++workerThreads;
-        QTRWorkerThread *thread = new QTRWorkerThread(&data, this, socketDescriptor);
-        connect(thread, SIGNAL(finished()), thread, SLOT(deleteLater()));
-        connect(thread, SIGNAL(finished()), this, SLOT(finished()));
-        thread->start();
-    }
-    else
-    {
-        QTcpSocket sock;
-        sock.setSocketDescriptor(socketDescriptor);
-        sock.close();
-    }
-*/
 
     if(data.sockets->tryAcquire()){
     QTRWorkerThread *thread = new QTRWorkerThread(&data, socketDescriptor);
@@ -113,10 +98,3 @@ void log_error(QByteArray in)
     out.flush();
     log.close();
 }
-
-/*
-void QTRServer::finished()
-{
-    --workerThreads;
-}
-*/

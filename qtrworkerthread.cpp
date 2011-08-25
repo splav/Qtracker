@@ -47,6 +47,35 @@ void QTRWorkerThread::http_status()
     reply = QString("Version: 2.7.1; total torrents: %1; total users: %2;").arg(data->tr.size()).arg(data->u.size()).toAscii();
 }
 
+void QTRWorkerThread::http_scrape(QByteArray in)
+{
+    QByteArray hash;
+
+
+    reply = QByteArray("d5:filesd");
+    foreach (QByteArray st, in.split('&'))
+        if (!st.isEmpty()) {
+            QList<QByteArray> tmp = st.split('=');
+            if (tmp.size() != 2)
+                continue;
+
+            if (tmp[0].startsWith("info_hash")) { //info_hash match
+                hash = decode(tmp[1]);
+                if (hash.size() != 20)
+                    return http_error("Invalid hash");
+                continue;
+            }
+
+data->trackerLock.lockForRead();
+            if (data->tr.contains(hash)) {
+                reply.append(QString("20:%1d8:completei%2e10:downloadedi%3e10:incompletei%4ee").arg(
+                                 QString(hash)).arg(data->tr[hash].seedc).arg(data->tr[hash].seedc).arg(data->tr[hash].peerc - data->tr[hash].seedc).toAscii());
+            }
+data->trackerLock.unlock();
+            reply.append("ee");
+        }
+}
+
 void QTRWorkerThread::http_announce(QByteArray in)
 {
     QByteArray hash;
@@ -263,17 +292,26 @@ void QTRWorkerThread::http_request(QByteArray in)
     tmp = tmp[1].split('/').last().split('?');
     // getting the string after '/' then splitting it by '?'
 
-    if( (tmp.size() > 1) && ( tmp[0].startsWith("ann") || tmp[0].isEmpty()))
+    if( (tmp.size() > 1) && ( tmp[0].startsWith("announce") || tmp[0].isEmpty()))
+    {
         http_announce((tmp.size()>2) ? tmp[1].append(tmp[2]) : tmp[1]);
-    else {
-        if( (tmp.size() == 1) && (tmp[0] == "stat"))
-            http_status();
-        else {
-            http_error("HTTP 404");
-            data->log_error(in);
-        }
+        return;
     }
 
+    if( (tmp.size() > 1) && tmp[0].startsWith("scrape"))
+    {
+        http_scrape((tmp.size()>2) ? tmp[1].append(tmp[2]) : tmp[1]);
+        return;
+    }
+
+    if( (tmp.size() == 1) && (tmp[0] == "stat"))
+    {
+        http_status();
+        return;
+    }
+
+    http_error("HTTP 404");
+    data->log_error(in);
 }
 
 void QTRWorkerThread::run()

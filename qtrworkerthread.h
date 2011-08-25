@@ -4,7 +4,6 @@
 #include "qtrstruct.h"
 #include "mod_db_unsorted.h"
 
-//#include <QThread>
 #include <QRunnable>
 
 class QTRWorkerThread : public QRunnable
@@ -17,8 +16,6 @@ public:
 
 private:
     DBUnsorted *db_gate;
-
-    //int n;
 
     int sock_id;
     int numwant;
@@ -34,6 +31,7 @@ private:
     void http_status();
     void http_request(QByteArray data);
     void http_announce(QByteArray data);
+    void http_scrape(QByteArray data);
 };
 
 #endif

@@ -19,9 +19,6 @@ public:
 private slots:
     void reloadAndClean();
 
-public slots:
-//    void finished();
-
 protected:
     void incomingConnection(int socketDescriptor);
 
@@ -31,8 +28,7 @@ private:
 
     QTimer cfgTimer;
     SharedData data;
-//    int workerThreads;
-//    int maxPendingConnections;
+
     int maxWorkerThreads;
 };
 
