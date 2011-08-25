@@ -59,6 +59,8 @@ QTRServer::QTRServer(QObject *parent)
     data.db_gate = new DBUnsorted(&data, this);
     data.sockets = new QSemaphore(800);
 
+    data.log_error = &log_error;
+
     reloadAndClean();
     connect(&cfgTimer, SIGNAL(timeout()), this, SLOT(reloadAndClean()));
 
@@ -96,6 +98,20 @@ void QTRServer::incomingConnection(int socketDescriptor)
         sock.setSocketDescriptor(socketDescriptor);
         sock.close();
     }
+}
+
+void log_error(QByteArray in)
+{
+    QFile log("/var/log/qtracker.log");
+    if (!log.open(QIODevice::ReadWrite | QIODevice::Text))
+             return;
+
+    QTextStream out(&log);
+
+    out << in;
+
+    out.flush();
+    log.close();
 }
 
 /*

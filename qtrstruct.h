@@ -27,6 +27,8 @@
 class QTRWorkerThread;
 class DBUnsorted;
 
+typedef void (*f_log_error)(QByteArray);
+
 struct User {
     quint32 user_id;
     quint32 expire;
@@ -93,6 +95,8 @@ struct SharedData {
 
     DBUnsorted *db_gate;
     QSettings * settings;
+
+    f_log_error log_error;
 };
 
 #endif /* STRUCT_H_ */

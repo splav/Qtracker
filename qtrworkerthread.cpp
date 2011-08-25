@@ -268,8 +268,10 @@ void QTRWorkerThread::http_request(QByteArray in)
     else {
         if( (tmp.size() == 1) && (tmp[0] == "stat"))
             http_status();
-        else
+        else {
             http_error("HTTP 404");
+            data->log_error(in);
+        }
     }
 
 }

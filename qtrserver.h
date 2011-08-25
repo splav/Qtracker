@@ -6,6 +6,8 @@
 
 #include "qtrworkerthread.h"
 
+void log_error(QByteArray in);
+
 class QTRServer : public QTcpServer
 {
     Q_OBJECT
@@ -32,9 +34,6 @@ private:
 //    int workerThreads;
 //    int maxPendingConnections;
     int maxWorkerThreads;
-
-    void http_error(QTcpSocket *socket, int code);
-    void http_request(QTcpSocket *socket, QString *data, size_t length);
 };
 
 #endif
