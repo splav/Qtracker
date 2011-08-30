@@ -3,9 +3,6 @@
 #include <QtNetwork>
 #include <arpa/inet.h>
 
-
-#define INBUF_SIZE 32768
-
 static char fromhex(char x) {
   if( (x-'0')<=9 ) return (x-'0');
   if( (x-'A')<=5 ) return (x-'A'+10);
@@ -323,6 +320,7 @@ void QTRWorkerThread::run()
     QByteArray req, header;
 
     if (!sock.setSocketDescriptor(sock_id)) {
+        data->sockets->release(); // don't forget to release mutex!
         return;
     }
 
