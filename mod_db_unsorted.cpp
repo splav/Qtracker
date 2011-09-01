@@ -207,20 +207,27 @@ bool DBUnsorted::setUserStat(User &u)
 {
 QMutexLocker llocker(&ulock);
 
-    setUserData.user_id.append(u.user_id);
-    setUserData.up.append(u.up);
-    setUserData.down.append(u.down);
-    setUserData.bonus.append(u.bonus);
+    UserData udata;
+    udata.up = u.up;
+    udata.down = u.down;
+    udata.bonus = u.bonus;
 
-    if(setUserData.user_id.size()>50) //FIXME
+    userData.insert(u.user_id,udata);
+
+    if(userData.size()>50) //FIXME
     {
+        SetUserData temp;
 
-        SetUserData temp = setUserData;
+        QHash < quint32, UserData >::iterator j = userData.begin();
+        while (j != userData.end()) {
+            temp.user_id.append(j.key());
+            temp.up.append(j.value().up);
+            temp.down.append(j.value().down);
+            temp.bonus.append(j.value().bonus);
+            ++j;
+        }
 
-        setUserData.user_id.clear();
-        setUserData.up.clear();
-        setUserData.down.clear();
-        setUserData.bonus.clear();
+        userData.clear();
 
 llocker.unlock();
 QMutexLocker locker(&dblock);
@@ -235,6 +242,7 @@ QMutexLocker locker(&dblock);
 qDebug() << qrepl_user_stat->lastError().text();
             return false;
         }
+qDebug() << qrepl_user_stat->lastQuery();
 
         temp.user_id.clear();
         temp.up.clear();

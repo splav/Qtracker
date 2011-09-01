@@ -27,6 +27,11 @@ struct SetUserData {
     QVariantList bonus;
 };
 
+struct UserData {
+    qlonglong up;
+    qlonglong down;
+    qlonglong bonus;
+};
 
 class DBUnsorted : public QObject
 {
@@ -62,7 +67,8 @@ private:
     QSqlQuery *qrepl_tracker;
 
     SetStatusData  setStatusData;
-    SetUserData    setUserData;
+
+    QHash<quint32,UserData> userData;
 
     QString dbserver;
     QString dbdatabase;
