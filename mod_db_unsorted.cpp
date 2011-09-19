@@ -304,7 +304,7 @@ QByteArray DBUnsorted::filter_peer(QByteArray peer, QByteArray pid)
     //PT & Aviel ip magick
     if ( peer[0] == char(0x0aU) && peer[1] == char(0xb4U) &&
             pid[0] == char(0x0aU) && (pid[1] == char(0x64U)  || pid[1] == char(0x6eU))){
-         _res_peer[1] == char(0x64U);
+         _res_peer[1] = char(0x64U);
          qDebug() << "peer ip magick for " << pid.toHex() << ":" << peer.toHex() << "->" << _res_peer.toHex();
     }
     return _res_peer;
