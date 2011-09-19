@@ -46,6 +46,7 @@ public:
     bool setStatus(Peer &pd, QString sip, Host &host);
     bool setUserStat(User &u);
     bool getConfig();
+    QByteArray filter_peer(QByteArray peer, QByteArray pid);
 
 private:
     QString sip;

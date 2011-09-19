@@ -268,7 +268,7 @@ data->trackerLock.lockForRead();
 
             if (numwant == tr.peers.size())
                 foreach(QByteArray peer, tr.peers.keys())
-                    reply.append(peer);
+                    reply.append(db_gate->filter_peer(peer,pid));
             else
                 for(int i = 0; i < numwant; ++i)
                     reply.append(tr.peers.keys()[qrand() % tr.peers.size()]);
