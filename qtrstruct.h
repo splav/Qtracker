@@ -97,6 +97,7 @@ struct SharedData {
     QSettings * settings;
 
     f_log_error log_error;
+    QMutex      logMutex;
 };
 
 #endif /* STRUCT_H_ */

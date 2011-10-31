@@ -3,6 +3,7 @@
 
 #include <QTcpServer>
 #include <QThreadPool>
+#include <QMutexLocker>
 
 #include "qtrworkerthread.h"
 

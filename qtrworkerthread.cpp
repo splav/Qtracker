@@ -311,6 +311,8 @@ void QTRWorkerThread::http_request(QByteArray in)
     }
 
     http_error("HTTP 404");
+
+    QMutexLocker lock(&(data->logMutex));
     data->log_error(in);
 }
 
