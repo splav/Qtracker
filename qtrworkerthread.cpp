@@ -289,22 +289,35 @@ void QTRWorkerThread::http_request(QByteArray in)
     if (tmp.size() < 3)
         http_error("HTTP 400");
 
-    tmp = tmp[1].split('/').last().split('?');
+    //tmp = tmp[1].split('/').last().split('?');
+    tmp = tmp[1].split('?');
     // getting the string after '/' then splitting it by '?'
 
-    if( (tmp.size() > 1) && ( tmp[0].startsWith("announce") || tmp[0].isEmpty()))
+
+    QByteArray action = tmp[0].split('/').last();
+    QByteArray body;
+
+    qDebug() << "action: " << action;
+    qDebug() << "body: " << body;
+
+    if (tmp.size()>1){
+        body = (tmp.size()>2) ? tmp[1].append(tmp[2]) : tmp[1];
+        body = body.split(' ').first();
+    }
+
+    if(action.startsWith("announce") || action.isEmpty())
     {
-        http_announce((tmp.size()>2) ? tmp[1].append(tmp[2]) : tmp[1]);
+        http_announce(body);
         return;
     }
 
-    if( (tmp.size() > 1) && tmp[0].startsWith("scrape"))
+    if(action.startsWith("scrape"))
     {
-        http_scrape((tmp.size()>2) ? tmp[1].append(tmp[2]) : tmp[1]);
+        http_scrape(body);
         return;
     }
 
-    if( (tmp.size() == 1) && (tmp[0] == "stat"))
+    if(action == "stat")
     {
         http_status();
         return;
@@ -314,7 +327,7 @@ void QTRWorkerThread::http_request(QByteArray in)
 
     data->logMutex.lock();
     data->log_error(in);
-    data->logMutex.unlock();
+    data->logMutex.lock();
 }
 
 void QTRWorkerThread::run()
