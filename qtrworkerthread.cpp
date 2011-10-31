@@ -297,13 +297,13 @@ void QTRWorkerThread::http_request(QByteArray in)
     QByteArray action = tmp[0].split('/').last();
     QByteArray body;
 
-    qDebug() << "action: " << action;
-    qDebug() << "body: " << body;
-
     if (tmp.size()>1){
         body = (tmp.size()>2) ? tmp[1].append(tmp[2]) : tmp[1];
         body = body.split(' ').first();
     }
+
+    qDebug() << "action: " << action;
+    qDebug() << "body: " << body;
 
     if(action.startsWith("announce") || action.isEmpty())
     {
